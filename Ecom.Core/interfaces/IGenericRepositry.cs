@@ -12,7 +12,11 @@ namespace Ecom.Core.interfaces
  
     {
         Task<IReadOnlyList<T>> GetAllAsync();
-            Task<IReadOnlyList<T>> GetAllAsync(params Expression<Func<T , Object>>[] includes);  
+            Task<IReadOnlyList<T>> GetAllAsync(params Expression<Func<T , Object>>[] includes);
+        Task<T> GetByIdAsync(int id);
+        // التعديل هنا: أضفنا بارامتر الـ params للاستماع للـ Includes ديناميكياً
+        //Task<T> GetByIdAsync(int id, params Expression<Func<T, Object>>[] includes);
+
         Task<T> GetByAsync(int id);
         Task<T> GetByAsync(int id, params Expression<Func<T, Object>>[] includes);
         Task<T> AddAsync(T entity);

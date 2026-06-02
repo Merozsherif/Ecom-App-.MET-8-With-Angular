@@ -71,6 +71,12 @@ namespace Ecom.infrastructure.Repositires
             return entity;
         }
 
+        public async Task<T> GetByIdAsync(int id)
+        {
+            var entity = await _context.Set<T>().FindAsync(id);
+            return entity;
+        }
+
         public async Task<T> UpdateAsync(T entity)
         {
             _context.Entry(entity).State = EntityState.Modified;
