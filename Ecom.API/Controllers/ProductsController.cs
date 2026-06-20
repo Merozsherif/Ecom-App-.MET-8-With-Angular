@@ -3,6 +3,7 @@ using Ecom.API.Helper;
 using Ecom.Core.DTO;
 using Ecom.Core.Entities.Product;
 using Ecom.Core.interfaces;
+using Ecom.Core.Sharing;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,20 +16,15 @@ namespace Ecom.API.Controllers
         {
         }
         [HttpGet("get-all")]
-        public async Task<IActionResult> get()
+        public async Task<IActionResult> get([FromQuery]ProductParams productParams)
         {
             try
             {
                 var Product = await work.productRepositry
-                    .GetAllAsync(x=>x.Category , x=>x.Photos);
-
-                var result = mapper.Map<List<ProductDTO>>(Product);
-
-                if(Product is null)
-                {
-                    return BadRequest(new ResponseAPI(400));
-                }
-                return Ok(result);
+                    .GetAllAsync(productParams);
+                //var totalCount = await work.productRepositry.CountAsync();
+            
+                return Ok(new Pagination<ProductDTO>(productParams.PageNumber , productParams.pageSize , Product.TotalCount, Product.products));
             }
             catch (Exception ex) 
             {
@@ -42,9 +38,9 @@ namespace Ecom.API.Controllers
             try
             {
                 var Product = await work.productRepositry
-                    .GetByIdAsync(id);
+                //.GetAllAsync(id);
 
-                //.GetByIdAsync(id, x => x.Category, x => x.Photos);
+                .GetByIdAsync(id, x => x.Category, x => x.Photos);
 
 
                 var result = mapper.Map<ProductDTO>(Product);
@@ -61,20 +57,35 @@ namespace Ecom.API.Controllers
             }
         }
 
+        //[HttpPost("Add-Product")]
+        //public async Task<IActionResult> add(AddProductDTO productDTO)
+        //{
+        //    try
+        //    {
+        //        var product = mapper.Map<Product>(productDTO);
+
+        //        await work.productRepositry.AddAsync(product);
+
+        //        return Ok(new ResponseAPI(200));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest(ex.ToString()); // مهم جدًا
+        //    }
+        //}
+
         [HttpPost("Add-Product")]
-        public async Task<IActionResult> add(AddProductDTO productDTO)
+        public async Task<IActionResult> add([FromForm] AddProductDTO productDTO)
         {
             try
             {
-                var product = mapper.Map<Product>(productDTO);
-
-                await work.productRepositry.AddAsync(product);
+                await work.productRepositry.AddAsync(productDTO);
 
                 return Ok(new ResponseAPI(200));
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.ToString()); // مهم جدًا
+                return BadRequest(ex.ToString());
             }
         }
 
@@ -98,8 +109,8 @@ namespace Ecom.API.Controllers
             try
             {
                 var product = await work.productRepositry
-                    .GetByIdAsync(Id);
-                 //.GetByIdAsync(Id, x => x.Photos, x => x.Category);
+                 //.GetByIdAsync(Id);
+                 .GetByIdAsync(Id, x => x.Photos, x => x.Category);
 
                 await work.productRepositry.DeleteAsync(product);
 

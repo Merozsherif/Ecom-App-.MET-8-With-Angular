@@ -12,5 +12,9 @@ namespace Ecom.Core.interfaces
         public ICategoryRepositry categoryRepositry { get;  }
         public IPhotoRepositry photoRepositry{ get; }
         public IProductRepositry productRepositry{ get; }
+
+
+        public ICustomerBasketRepositry CustomerBasket{ get; }
+        public IAuth Auth { get; }  
     }
 }

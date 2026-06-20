@@ -26,6 +26,9 @@ namespace Ecom.infrastructure.Repositires
             return entity;
         }
 
+        public async Task<int> CountAsync()
+        => await _context.Set<T>().CountAsync();
+
         public async Task<T> DeleteAsync(int id)
         {
             var entity = await _context.Set<T>().FindAsync(id);
@@ -77,11 +80,31 @@ namespace Ecom.infrastructure.Repositires
             return entity;
         }
 
+        public Task<T> GetByIdAsync(int id, params Expression<Func<T, object>>[] includes)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<T> UpdateAsync(T entity)
         {
             _context.Entry(entity).State = EntityState.Modified;
             await _context.SaveChangesAsync();
             return entity;
+        }
+
+        Task IGenericRepositry<T>.AddAsync(T entity)
+        {
+            return AddAsync(entity);
+        }
+
+        Task IGenericRepositry<T>.DeleteAsync(int id)
+        {
+            return DeleteAsync(id);
+        }
+
+        Task IGenericRepositry<T>.UpdateAsync(T entity)
+        {
+            return UpdateAsync(entity);
         }
     }
 }
