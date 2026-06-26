@@ -36,6 +36,8 @@ namespace Ecom.infrastructure
 
             services.AddScoped<IEmailService, EmailService>();
 
+            services.AddScoped<IOrderService, OrderService>();
+
             services.AddScoped<IGenerateToken, GenerateToken>();
 
             services.AddSingleton<IConnectionMultiplexer>(i =>

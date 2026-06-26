@@ -52,6 +52,7 @@ namespace Ecom.infrastructure.Repositories
             productRepositry = new ProductRepositry(_context, _mapper, _imageManagementService);
             CustomerBasket = new CustomerBasketRepositry(redis);
             Auth = new AuthRepositry(userManager, signInManager, emailService,token);
+            //Auth = new AuthRepositry(userManager, signInManager, emailService, token, _context);
         }
     }
 }

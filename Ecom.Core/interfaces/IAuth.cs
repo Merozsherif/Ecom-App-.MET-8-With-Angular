@@ -1,4 +1,5 @@
 ﻿using Ecom.Core.DTO;
+using Ecom.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,5 +18,8 @@ namespace Ecom.Core.interfaces
         Task<string> RestPassword(RestPasswordDTO restPassword);
 
         Task<bool> ActiveAccount(ActiveAccountDTO accountDTO);
+        Task<bool> UpdateAddress(string email, Address address);
+        Task<Address>getUserAddress(string email);
+
     }
 }

@@ -3,7 +3,9 @@ using Ecom.Core.Entities;
 using Ecom.Core.interfaces;
 using Ecom.Core.Services;
 using Ecom.Core.Sharing;
+using Ecom.infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,7 @@ namespace Ecom.infrastructure.Repositories
         private readonly IEmailService emailService;
         private readonly SignInManager<AppUser> signInManager;
         private readonly IGenerateToken generateToken;
+        private readonly AppDbContext context;
 
         public AuthRepositry(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService, IGenerateToken generateToken)
         {
@@ -145,6 +148,39 @@ namespace Ecom.infrastructure.Repositories
             await SendEmail(findUser.Email, token, "active", "ActiveEmail", "Please active your email,");
 
             return false;
+        }
+
+        public async Task<bool> UpdateAddress(string email, Address address)
+        {
+           var findUser = await userManager.FindByEmailAsync(email);
+            if (findUser is null)
+            {
+                return false ;
+            }
+            var Myaddress = await context.Addresses
+                .FirstOrDefaultAsync(m=> m.AppUserId == findUser.Id);
+            if (Myaddress is null)
+            {
+                address.AppUserId =findUser.Id;
+                await context.AddAsync(address);
+            }
+            else
+            { 
+                address.Id = Myaddress.Id;
+                context.Addresses.Update(address); 
+            }
+
+            await context.SaveChangesAsync();
+            return true;
+
+        }
+
+        public async Task<Address> getUserAddress(string email)
+        {
+            var User = await userManager.FindByEmailAsync(email);
+            var address = await context.Addresses.FirstOrDefaultAsync(m => m.AppUserId == User.Id);
+
+            return address;
         }
     }
 }
